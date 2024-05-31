@@ -26,8 +26,7 @@ const client = new MongoClient(uri, {
     deprecationErrors: true,
   }
 });
-//Password: BFqTV9h5dJMlNmU
-//username: CoffeShop
+
 async function run() {
   try {
     // Connect the client to the server	(optional starting in v4.7)
