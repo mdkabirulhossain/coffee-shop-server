@@ -12,8 +12,8 @@ const port = process.env.PORT || 5000;
 app.use(cors());
 app.use(express.json());
 
-console.log(process.env.USER);
-console.log(process.env.PASS);
+// console.log(process.env.USER);
+// console.log(process.env.PASS);
 
 
 const uri = `mongodb+srv://${process.env.USER}:${process.env.PASS}@cluster0.njjghgo.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0`;
@@ -31,6 +31,14 @@ async function run() {
   try {
     // Connect the client to the server	(optional starting in v4.7)
     await client.connect();
+    const database = client.db("coffeeshop");
+    const coffee = database.collection("coffee");
+    app.post('/coffee', async(req, res)=>{
+      const newCoffee = req.body;
+      console.log(newCoffee);
+      const result = await coffee.insertOne(newCoffee);
+      res.send(result);
+    })
     // Send a ping to confirm a successful connection
     await client.db("admin").command({ ping: 1 });
     console.log("Pinged your deployment. You successfully connected to MongoDB!");
