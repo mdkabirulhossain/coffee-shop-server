@@ -3,7 +3,7 @@ const express = require('express');
 const cors = require('cors');
 require('dotenv').config();
 const app = express();
-const { MongoClient, ServerApiVersion } = require('mongodb');
+const { MongoClient, ServerApiVersion, ObjectId } = require('mongodb');
 const port = process.env.PORT || 5000;
 
 // import 'dotenv/config';
@@ -33,10 +33,28 @@ async function run() {
     await client.connect();
     const database = client.db("coffeeshop");
     const coffee = database.collection("coffee");
+
     app.post('/coffee', async(req, res)=>{
       const newCoffee = req.body;
       console.log(newCoffee);
       const result = await coffee.insertOne(newCoffee);
+      res.send(result);
+    })
+    //find from database
+    app.get('/coffee', async(req, res)=>{
+      const cursor = coffee.find();
+      if((await cursor.count()) === 0){
+        console.log("No document found");
+      }
+      const result= await cursor.toArray();
+      res.send(result);
+    })
+    //delete from database
+    app.delete('/coffee/:id', async(req, res)=>{
+      console.log("Delete hit properly")
+      const id= req.params.id;
+      const query={_id: new ObjectId(id)}
+      const result = await coffee.deleteOne(query);
       res.send(result);
     })
     // Send a ping to confirm a successful connection
